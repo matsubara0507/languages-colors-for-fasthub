@@ -1,0 +1,24 @@
+name:                languages-colors-for-fasthub
+version:             0.1.0.0
+homepage:            https://github.com/matsubara0507/languages-colors-for-fasthub#readme
+license:             MIT
+author:              MATSUBARA Nobutada
+copyright:           2017 MATSUBARA Nobutada
+category:            Web
+extra-source-files:
+- README.md
+
+dependencies:
+  - aeson
+  - base >= 4.7 && < 5
+  - bytestring
+  - extensible
+  - lens
+  - text
+  - unordered-containers
+  - yaml
+
+executables:
+  check:
+    source-dirs:      src
+    main:             Main.hs
