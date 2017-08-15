@@ -1,6 +1,6 @@
 # languages-colors-for-fasthub
 
-Check diff language colors on [GitHub](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml) and [Haskell](https://github.com/k0shk0sh/FastHub/blob/master/app/src/main/assets/colors.json).
+Check diff language colors on [GitHub](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml) and [FasstHub](https://github.com/k0shk0sh/FastHub/blob/master/app/src/main/assets/colors.json).
 
 This command is made in Haskell with stack.
 
