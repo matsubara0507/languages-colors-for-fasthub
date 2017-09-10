@@ -1,3 +1,4 @@
+{-# LANGUAGE ConstraintKinds       #-}
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
@@ -6,7 +7,7 @@
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE PolyKinds             #-}
 {-# LANGUAGE TypeOperators         #-}
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE UndecidableInstances  #-}
 
 module Main where
 
@@ -50,8 +51,8 @@ type FastHubLanguages = HM.HashMap Text FastHubLanguage
 main :: IO ()
 main = do
   [gfp, ffp] <- getArgs
-  glangs <- Y.decodeEither . fromString <$> readFile gfp :: IO (Either String GitHubLanguages)
-  flangs <- eitherDecode .fromString <$> readFile ffp :: IO (Either String FastHubLanguages)
+  glangs <- Y.decodeEither . fromString <$> readFile gfp
+  flangs <- eitherDecode . fromString <$> readFile ffp
   either print (mapM_ print . HM.toList) $ diff <$> glangs <*> flangs
   -- print glangs
 
@@ -63,14 +64,17 @@ diff glangs flangs = HM.filter (not . uncurry eqColor)
 eqColor :: GitHubLanguage -> FastHubLanguage -> Bool
 eqColor glang flang = glang ^. #color == flang ^. #color
 
-instance Forall (KeyValue KnownSymbol FromJSON') xs => FromJSON (Record xs) where
+type C = KeyValue KnownSymbol FromJSON'
+
+instance Forall C xs => FromJSON (Record xs) where
   parseJSON = withObject "Object" $
-    \v -> hgenerateFor (Proxy :: Proxy (KeyValue KnownSymbol FromJSON')) $
+    \v -> hgenerateFor (Proxy :: Proxy C) $
     \m -> let k = symbolVal (proxyAssocKey m) in
       case HM.lookup (fromString k) v of
         Just a  -> Field . return <$> parseJSON a
         Nothing ->
-          maybe (fail $ "Missing key: " `mappend` k) (fmap (Field . return)) $ parseJSON' Nothing
+          maybe (fail $ "Missing key: " `mappend` k)
+            (fmap (Field . return)) $ parseJSON' Nothing
 
 class FromJSON a => FromJSON' a where
   parseJSON' :: Maybe Value -> Maybe (Parser a)
