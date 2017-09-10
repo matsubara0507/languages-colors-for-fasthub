@@ -61,7 +61,9 @@ diff glangs flangs = HM.filter (not . uncurry eqColor)
                    . HM.mapMaybeWithKey (\k v -> (,) v <$> HM.lookup k flangs)
                    $ glangs
 
-eqColor :: GitHubLanguage -> FastHubLanguage -> Bool
+eqColor ::
+  (Associate "color" (Maybe Text) xs, Associate "color" (Maybe Text) xs')
+  => Record xs -> Record xs' -> Bool
 eqColor glang flang = glang ^. #color == flang ^. #color
 
 type C = KeyValue KnownSymbol FromJSON'
